@@ -60,9 +60,10 @@ func handleMockCreate(w http.ResponseWriter, req *http.Request) {
 
 func sanitizeMethodInput(method string) (string, error) {
 	cleaned := strings.TrimSpace(strings.ToUpper(method))
-	if cleaned != string(RequestMethodPOST) || cleaned != string(RequestMethodGET) || cleaned != string(RequestMethodPUT) || cleaned != string(RequestMethodPATCH) || cleaned != string(RequestMethodDELETE) {
-		return "", errors.New("invalid method; method has to be one of: POST, GET, DELETE, PUT, PATCH")
+	fmt.Println(cleaned, string(RequestMethodDELETE))
+	if cleaned == string(RequestMethodPOST) || cleaned == string(RequestMethodGET) || cleaned == string(RequestMethodPUT) || cleaned == string(RequestMethodPATCH) || cleaned == string(RequestMethodDELETE) {
+		return cleaned, nil
 	}
 
-	return cleaned, nil
+	return "", errors.New("invalid method; method has to be one of: POST, GET, DELETE, PUT, PATCH")
 }
