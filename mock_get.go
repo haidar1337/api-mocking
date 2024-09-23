@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 
 	db "github.com/haidar1337/api-mocking/internal/database"
 )
@@ -28,15 +27,9 @@ func handleGetEndpoints(w http.ResponseWriter, req *http.Request) {
 }
 
 func handleGetEndpoint(w http.ResponseWriter, req *http.Request) {
-	in := req.PathValue("endpointId")
-	if in == "" {
-		sendErrorResponse(w, 400, "please provide an endpoint id")
-		return
-	}
-
-	id, err := strconv.Atoi(in)
+	id, err := checkIdPathValue(req, "endpointId")
 	if err != nil {
-		sendErrorResponse(w, 400, "please provide a valid id")
+		sendErrorResponse(w, 400, err.Error())
 		return
 	}
 

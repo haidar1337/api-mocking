@@ -71,3 +71,22 @@ func (db *DB) GetEndpointById(id int) (MockEndpoint, error) {
 
 	return MockEndpoint{}, errors.New("endpoint not found")
 }
+
+func (db *DB) DeleteEndpoint(id int) error {
+	structure, err := db.loadDB()
+	if err != nil {
+		return err
+	}
+
+	_, err = db.GetEndpointById(id)
+	if err != nil {
+		return err
+	}
+
+	delete(structure.MockEndpoints, id)
+	err = db.writeDB(structure)
+	if err != nil {
+		return err
+	}
+	return nil
+}
