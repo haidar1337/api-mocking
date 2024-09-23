@@ -30,7 +30,7 @@ func sendJSONResponse(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 func checkIdPathValue(req *http.Request, path string) (int, error) {
-	in := req.PathValue("endpointId")
+	in := req.PathValue(path)
 	if in == "" {
 		return 0, errors.New("please provide an id")
 	}
