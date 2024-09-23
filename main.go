@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-
-	mockingapi "github.com/haidar1337/api-mocking/internal/mocking-api"
 )
 
 func main() {
@@ -16,7 +14,7 @@ func main() {
 	}
 
 
-	mockingapi.InitializeMockAPI(mux)
+	InitializeMockAPI(mux)
 	
 
 	log.Printf("Server started on port: %s", port)

@@ -1,14 +1,16 @@
 package db
 
+import "errors"
+
 type MockEndpoint struct {
 	Endpoint string `json:"endpoint"`
 	Method string `json:"method"`
 	Delay uint
-	Request MockendpointRequest `json:"request"`
+	Request MockEndpointRequest `json:"request"`
 	Response MockEndpointResponse `json:"response"`
 }
 
-type MockendpointRequest struct {
+type MockEndpointRequest struct {
 	Body []Field `json:"request_body"`
 }
 
@@ -39,4 +41,33 @@ func (db *DB) CreateMockEndpoint(mep MockEndpoint) (MockEndpoint, error) {
 	}
 
 	return mep, nil
+}
+
+func (db *DB) GetEndpoints() ([]MockEndpoint, error) {
+	structure, err := db.loadDB()
+	if err != nil {
+		return nil, err
+	}
+
+	endpoints := make([]MockEndpoint, 0)
+	for _, endpoint := range structure.MockEndpoints {
+		endpoints = append(endpoints, endpoint)
+	}
+
+	return endpoints, nil
+}
+
+func (db *DB) GetEndpointById(id int) (MockEndpoint, error) {
+	structure, err := db.loadDB()
+	if err != nil {
+		return MockEndpoint{}, err
+	}
+
+	for idx, endpoint := range structure.MockEndpoints {
+		if idx == id {
+			return endpoint, nil
+		}
+	}
+
+	return MockEndpoint{}, errors.New("endpoint not found")
 }

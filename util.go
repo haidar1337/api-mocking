@@ -1,4 +1,4 @@
-package mockingapi
+package main
 
 import (
 	"encoding/json"

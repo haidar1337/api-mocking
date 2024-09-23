@@ -1,4 +1,4 @@
-package mockingapi
+package main
 
 import (
 	"encoding/json"
@@ -50,7 +50,6 @@ func handleMockCreate(w http.ResponseWriter, req *http.Request) {
 
 	ep, err := db.CreateMockEndpoint(endpoint)
 	if err != nil {
-		fmt.Println(err, endpoint)
 		sendErrorResponse(w, 500, "failed to create endpoint")
 		return
 	}
