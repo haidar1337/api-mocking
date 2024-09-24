@@ -3,10 +3,10 @@ package db
 import "errors"
 
 type MockEndpoint struct {
-	Endpoint string `json:"endpoint"`
-	Method string `json:"method"`
-	Delay uint
-	Request MockEndpointRequest `json:"request"`
+	Endpoint string               `json:"endpoint"`
+	Method   string               `json:"method"`
+	Delay    uint                 `json:"delay"`
+	Request  MockEndpointRequest  `json:"request"`
 	Response MockEndpointResponse `json:"response"`
 }
 
@@ -15,15 +15,15 @@ type MockEndpointRequest struct {
 }
 
 type MockEndpointResponse struct {
-	Message string `json:"message"`
-	StatusCode int `json:"status_code"`
-	Body any `json:"response_body"`
+	Message    string `json:"message"`
+	StatusCode int    `json:"status_code"`
+	Body       any    `json:"response_body"`
 }
 
 type Field struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Required bool `json:"required"`
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+	Required bool   `json:"required"`
 }
 
 func (db *DB) CreateMockEndpoint(mep MockEndpoint) (MockEndpoint, error) {
@@ -34,7 +34,7 @@ func (db *DB) CreateMockEndpoint(mep MockEndpoint) (MockEndpoint, error) {
 
 	id := len(structure.MockEndpoints) + 1
 	structure.MockEndpoints[id] = mep
-	
+
 	err = db.writeDB(structure)
 	if err != nil {
 		return MockEndpoint{}, err

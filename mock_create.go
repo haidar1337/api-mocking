@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -13,11 +12,11 @@ import (
 type RequestMethod string
 
 const (
-	RequestMethodGET  	 	RequestMethod = "GET"
-	RequestMethodPOST 		RequestMethod = "POST"
-	RequestMethodDELETE  RequestMethod = "DELETE"
-	RequestMethodPUT   	 RequestMethod = "PUT"
-	RequestMethodPATCH    RequestMethod = "PATCH"
+	RequestMethodGET    RequestMethod = "GET"
+	RequestMethodPOST   RequestMethod = "POST"
+	RequestMethodDELETE RequestMethod = "DELETE"
+	RequestMethodPUT    RequestMethod = "PUT"
+	RequestMethodPATCH  RequestMethod = "PATCH"
 )
 
 func handleMockCreate(w http.ResponseWriter, req *http.Request) {
@@ -40,7 +39,6 @@ func handleMockCreate(w http.ResponseWriter, req *http.Request) {
 		sendErrorResponse(w, 400, err.Error())
 		return
 	}
-	
 
 	db, err := db.NewDB("./database.json")
 	if err != nil {
@@ -59,7 +57,6 @@ func handleMockCreate(w http.ResponseWriter, req *http.Request) {
 
 func sanitizeMethodInput(method string) (string, error) {
 	cleaned := strings.TrimSpace(strings.ToUpper(method))
-	fmt.Println(cleaned, string(RequestMethodDELETE))
 	if cleaned == string(RequestMethodPOST) || cleaned == string(RequestMethodGET) || cleaned == string(RequestMethodPUT) || cleaned == string(RequestMethodPATCH) || cleaned == string(RequestMethodDELETE) {
 		return cleaned, nil
 	}

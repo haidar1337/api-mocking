@@ -9,13 +9,13 @@ import (
 
 type DB struct {
 	path string
-	mux *sync.RWMutex
+	mux  *sync.RWMutex
 }
 
 type DBStructure struct {
 	MockEndpoints map[int]MockEndpoint `json:"mock_endpoints"`
 }
-	
+
 func NewDB(path string) (*DB, error) {
 	db := &DB{
 		path: path,
