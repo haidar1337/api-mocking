@@ -3,11 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-)
 
-type config struct {
-	mux *http.ServeMux
-}
+	"github.com/haidar1337/api-mocking/internal/api"
+)
 
 func main() {
 	port := "8080"
@@ -16,10 +14,8 @@ func main() {
 		Addr:    ":" + port,
 		Handler: mux,
 	}
-	cfg := config{
-		mux: mux,
-	}
-	cfg.InitializeMockAPI(mux)
+
+	api.InitializeMockAPI(mux)
 
 	log.Printf("Server started on port: %s", port)
 	log.Fatal(server.ListenAndServe())

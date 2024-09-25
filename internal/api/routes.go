@@ -1,8 +1,8 @@
-package main
+package api
 
 import "net/http"
 
-func (cfg *config) InitializeMockAPI(mux *http.ServeMux) {
+func InitializeMockAPI(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /mock/endpoints", handleGetEndpoints)
 	mux.HandleFunc("GET /mock/endpoints/{endpointId}", handleGetEndpoint)
