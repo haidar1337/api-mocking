@@ -10,5 +10,5 @@ func InitializeMockAPI(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /mock/endpoints/{endpointId}", handleMockUpdate)
 	mux.HandleFunc("DELETE /mock/endpoints/{endpointId}", handleMockDelete)
 
-	mux.HandleFunc("/mock/{endpoint}", handleMocking)
+	mux.HandleFunc("GET /mock/{endpointId}", handleMocking)
 }
