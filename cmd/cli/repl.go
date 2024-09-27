@@ -7,8 +7,6 @@ import (
 	"strconv"
 )
 
-
-
 func repl(r io.Reader, cfg *config) {
 	scanner := bufio.NewScanner(r)
 	fmt.Println(startMessage(cfg))
@@ -28,16 +26,13 @@ func repl(r io.Reader, cfg *config) {
 			continue
 		}
 
-		cmd.execute(input, cfg)
+		cmd.callback(cfg, input)
 	}
 }
 
 func startMessage(cfg *config) string {
 	welcome := "Welcome to the API Mocking Service, please choose an option from the list below:\n"
-	options, err := cfg.getCommands()
-	if err != nil {
-		return welcome
-	}
+	options := cfg.getCommands()
 	msg := fmt.Sprintf(welcome)
 	for i := 0; i < len(options); i++ {
 		opt := options[i]
