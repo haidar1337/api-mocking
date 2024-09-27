@@ -34,7 +34,15 @@ func commandGet(cfg *config, args ...string) error {
 	}
 	err = json.Unmarshal(body, &endpoints)
 
-	fmt.Println(endpoints)
+	fmt.Println(structureResponse(endpoints))
 
 	return nil
+}
+
+func structureResponse(endpoints []mockendpoint) string {
+	out := ""
+	for idx, endpoint := range endpoints {
+		out += fmt.Sprintf("%d. %s %s\n", idx+1, endpoint.Method, endpoint.Endpoint)
+	}
+	return out
 }

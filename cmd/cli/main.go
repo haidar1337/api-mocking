@@ -6,9 +6,9 @@ import (
 )
 
 type config struct {
+	baseURL    string
 	httpClient *http.Client
 	commands   []command
-	baseURL    string
 }
 
 func main() {
