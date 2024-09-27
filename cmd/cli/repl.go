@@ -26,7 +26,11 @@ func repl(r io.Reader, cfg *config) {
 			continue
 		}
 
-		cmd.callback(cfg, input)
+		err = cmd.callback(cfg, input)
+		if err != nil {
+			fmt.Println(err.Error())
+			continue
+		}
 	}
 }
 

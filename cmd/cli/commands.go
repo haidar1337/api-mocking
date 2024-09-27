@@ -12,6 +12,8 @@ type command struct {
 func (cfg *config) initCommands() error {
 	cfg.addNewCommand("create", "creates a new endpoint", commandCreate)
 	cfg.addNewCommand("get", "gets all endpoints", commandGet)
+	cfg.addNewCommand("delete", "deletes an endpoint", commandDelete)
+	cfg.addNewCommand("mock", "mock an endpoint", commandMock)
 	return nil
 }
 
