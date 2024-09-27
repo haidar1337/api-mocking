@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+	"os"
+)
+
+type config struct {
+	httpClient *http.Client
+	commands []command
+}
 
 func main() {
-	fmt.Println("test")
+	cfg := config{
+		httpClient: &http.Client{},
+		commands: []command{},
+	}
+	cfg.initCommands()
+	repl(os.Stdin, &cfg)
 }
