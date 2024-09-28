@@ -22,6 +22,7 @@ func commandMock(cfg *config, args ...string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Sending a %s request to %s...\n", endpoints[id-1].Method, endpoints[id-1].Endpoint)
 
 	res, err := cfg.httpClient.Do(req)
 	if err != nil {
