@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,12 +12,12 @@ import (
 
 func handleStatusCodeErr(code int) error {
 	if code > 299 {
-		return errors.New(fmt.Sprintf("something went wrong: %d", code))
+		return fmt.Errorf("something went wrong: %d", code)
 	}
 	return nil
 }
 
-func structureResponse(endpoints []mockendpoint) string {
+func structureEndpoints(endpoints []mockendpoint) string {
 	out := ""
 	for idx, endpoint := range endpoints {
 		out += fmt.Sprintf("%d. %s %s\n", idx+1, endpoint.Method, endpoint.Endpoint)
@@ -26,13 +25,13 @@ func structureResponse(endpoints []mockendpoint) string {
 	return out
 }
 
-func handleSelection(msg string, cfg *config, endpoints []mockendpoint) int {
+func handleIDSelection(msg string, cfg *config, endpoints []mockendpoint) int {
 	scanner := bufio.NewScanner(os.Stdin)
 	var id int
 	var err error
 	for {
 		fmt.Println(msg)
-		fmt.Print(structureResponse(endpoints))
+		fmt.Print(structureEndpoints(endpoints))
 		scanner.Scan()
 		input := scanner.Text()
 
@@ -89,4 +88,20 @@ func structureResponseBody(res map[string]any) string {
 	}
 	response += "}"
 	return response
+}
+
+func structureEndpoint(endpoint mockendpoint) string {
+	out := ""
+
+	msg := fmt.Sprintf("Endpoint Route: %s\nRequest Method: %s\nStatus Code: %d\nDelay: %d\n", endpoint.Endpoint, endpoint.Method, endpoint.Response.StatusCode, endpoint.Delay)
+
+	fields := "Request Fields >\n"
+	for i := 0; i < len(endpoint.Request.Body); i++ {
+		f := endpoint.Request.Body[i]
+		fields += fmt.Sprintf("Field %s Type %s Required %v\n", f.Name, f.Type, f.Required)
+	}
+
+	response := structureResponseBody(endpoint.Response.Body)
+
+	return out + msg + fields + response
 }

@@ -15,35 +15,12 @@ import (
 )
 
 func commandCreate(cfg *config, args ...string) error {
-	endpoint, err := handleEndpointCreation()
+	userCreatedEndpoint, err := handleEndpointCreation()
 	if err != nil {
 		return err
 	}
 
-	reqBody, err := json.Marshal(&endpoint)
-	if err != nil {
-		return err
-	}
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/mock/endpoints", cfg.baseURL), bytes.NewBuffer(reqBody))
-	if err != nil {
-		return err
-	}
-
-	res, err := cfg.httpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	err = handleStatusCodeErr(res.StatusCode)
-	if err != nil {
-		return err
-	}
-	ep := mockendpoint{}
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(body, &ep)
+	endpoint, err := createEndpoint(userCreatedEndpoint, cfg)
 	if err != nil {
 		return err
 	}
@@ -52,6 +29,38 @@ func commandCreate(cfg *config, args ...string) error {
 	fmt.Println(structureEndpoint(endpoint))
 
 	return nil
+}
+
+func createEndpoint(endpoint mockendpoint, cfg *config) (mockendpoint, error) {
+	reqBody, err := json.Marshal(&endpoint)
+	if err != nil {
+		return mockendpoint{}, err
+	}
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/mock/endpoints", cfg.baseURL), bytes.NewBuffer(reqBody))
+	if err != nil {
+		return mockendpoint{}, err
+	}
+
+	res, err := cfg.httpClient.Do(req)
+	if err != nil {
+		return mockendpoint{}, err
+	}
+	defer res.Body.Close()
+	err = handleStatusCodeErr(res.StatusCode)
+	if err != nil {
+		return mockendpoint{}, err
+	}
+	ep := mockendpoint{}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return mockendpoint{}, err
+	}
+	err = json.Unmarshal(body, &ep)
+	if err != nil {
+		return mockendpoint{}, err
+	}
+
+	return ep, nil
 }
 
 func handleEndpointCreation() (mockendpoint, error) {
@@ -110,7 +119,6 @@ func handleEndpointCreation() (mockendpoint, error) {
 				"int",
 				"bool",
 				"float",
-				"list",
 			}
 			if !slices.Contains(supportedTypes, sanitizedFieldtype) {
 				return mockendpoint{}, fmt.Errorf("field type %s is not supported, please provide one of the supported field types", sanitizedFieldtype)
@@ -148,17 +156,17 @@ func handleEndpointCreation() (mockendpoint, error) {
 
 	r := make(map[string]any, 0)
 	for {
-		fmt.Println("Add a response body? [Y/N] > ")
+		fmt.Print("Add a response body? [Y/N] > ")
 		scanner.Scan()
 		response := scanner.Text()
 		if strings.ToLower(response) == "n" {
 			break
-
 		}
-		fmt.Println("Enter response body key (e.g. tweet_id) > ")
+
+		fmt.Print("Enter response body key (e.g. username) > ")
 		scanner.Scan()
 		k := scanner.Text()
-		fmt.Printf("Enter %v value (e.g. 21095721956219740917401) > ", k)
+		fmt.Printf("Enter %v value (e.g. haidar1337) > ", k)
 		scanner.Scan()
 		v := scanner.Text()
 
@@ -179,20 +187,4 @@ func handleEndpointCreation() (mockendpoint, error) {
 	}
 
 	return mockendpoint, nil
-}
-
-func structureEndpoint(endpoint mockendpoint) string {
-	out := ""
-
-	msg := fmt.Sprintf("Endpoint Route: %s\nRequest Method: %s\nStatus Code: %d\nDelay: %d\n", endpoint.Endpoint, endpoint.Method, endpoint.Response.StatusCode, endpoint.Delay)
-
-	fields := "Request Fields >\n"
-	for i := 0; i < len(endpoint.Request.Body); i++ {
-		f := endpoint.Request.Body[i]
-		fields += fmt.Sprintf("Field %s Type %s Required %v\n", f.Name, f.Type, f.Required)
-	}
-
-	response := structureResponseBody(endpoint.Response.Body)
-
-	return out + msg + fields + response
 }

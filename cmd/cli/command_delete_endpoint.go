@@ -32,7 +32,7 @@ func commandDelete(cfg *config, args ...string) error {
 		return err
 	}
 
-	id := handleSelection("Which endpoint would you like to delete?\nChoose from the list below by typing in the number of the endpoint or type exit to exit", cfg, mockendpoints)
+	id := handleIDSelection("Which endpoint would you like to delete?\nChoose from the list below by typing in the number of the endpoint or type exit to exit", cfg, mockendpoints)
 	if id == 0 {
 		return nil
 	}

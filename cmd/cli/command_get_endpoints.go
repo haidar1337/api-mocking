@@ -9,7 +9,7 @@ func commandGet(cfg *config, args ...string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(structureResponse(endpoints))
+	fmt.Println(structureEndpoints(endpoints))
 
 	return nil
 }

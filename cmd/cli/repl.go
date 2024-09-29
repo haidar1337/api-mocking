@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 )
 
 func repl(r io.Reader, cfg *config) {
@@ -14,6 +15,11 @@ func repl(r io.Reader, cfg *config) {
 		fmt.Print("Mock >> ")
 		scanner.Scan()
 		input := scanner.Text()
+
+		if strings.ToLower(input) == "help" {
+			fmt.Println(startMessage(cfg))
+			continue
+		}
 
 		id, err := strconv.Atoi(input)
 		if err != nil {
@@ -35,12 +41,11 @@ func repl(r io.Reader, cfg *config) {
 }
 
 func startMessage(cfg *config) string {
-	welcome := "Welcome to the API Mocking Service, please choose an option from the list below:\n"
+	msg := "Welcome to the API Mocking Service, type help to get a list of available commands\nplease choose an option from the list below:\n"
 	options := cfg.getCommands()
-	msg := fmt.Sprintf(welcome)
 	for i := 0; i < len(options); i++ {
 		opt := options[i]
-		msg += fmt.Sprintf("%d. %s. %s\n", opt.id, opt.name, opt.description)
+		msg += fmt.Sprintf("%d. %s: %s\n", opt.id, opt.name, opt.description)
 	}
 
 	return msg
