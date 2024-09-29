@@ -18,7 +18,7 @@ func handleMockCreate(w http.ResponseWriter, req *http.Request) {
 		sendErrorResponse(w, 400, "endpoint cannot be empty")
 		return
 	}
-	if endpoint.Response == (db.MockEndpointResponse{}) {
+	if endpoint.Response.Body == nil {
 		sendErrorResponse(w, 400, "bad request; provide a response object")
 		return
 	}

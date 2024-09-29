@@ -28,7 +28,7 @@ func commandMock(cfg *config, args ...string) error {
 	if err != nil {
 		return err
 	}
-	mockendpoint := []interface{}{}
+	mockendpoint := mockendpoint{}
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
@@ -38,6 +38,9 @@ func commandMock(cfg *config, args ...string) error {
 		return err
 	}
 
-	fmt.Println(mockendpoint)
+	fmt.Printf("Status: %v, Time: %vs\n", mockendpoint.Response.StatusCode, mockendpoint.Delay/1000)
+	response := structureResponseBody(mockendpoint.Response.Body)
+	fmt.Println(response)
+
 	return nil
 }

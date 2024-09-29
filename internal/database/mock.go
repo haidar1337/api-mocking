@@ -15,8 +15,8 @@ type MockEndpointRequest struct {
 }
 
 type MockEndpointResponse struct {
-	StatusCode int `json:"status_code"`
-	Body       any `json:"response_body"`
+	StatusCode int            `json:"status_code"`
+	Body       map[string]any `json:"response_body"`
 }
 
 type Field struct {

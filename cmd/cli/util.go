@@ -81,3 +81,12 @@ func getEndpoints(cfg *config) ([]mockendpoint, error) {
 
 	return endpoints, nil
 }
+
+func structureResponseBody(res map[string]any) string {
+	response := "Response: {\n"
+	for k, v := range res {
+		response += fmt.Sprintf("  \"%v\": %v\n", k, v)
+	}
+	response += "}"
+	return response
+}

@@ -26,7 +26,7 @@ func handleMocking(w http.ResponseWriter, req *http.Request) {
 	}
 
 	simulateDelay(endpoint.Delay)
-	sendJSONResponse(w, endpoint.Response.StatusCode, endpoint.Response.Body)
+	sendJSONResponse(w, endpoint.Response.StatusCode, endpoint)
 }
 
 func simulateDelay(delay uint) {

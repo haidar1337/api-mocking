@@ -48,6 +48,7 @@ func commandCreate(cfg *config, args ...string) error {
 		return err
 	}
 
+	fmt.Println("Successfully created a mock endpoint with the following details:")
 	fmt.Println(structureEndpoint(endpoint))
 
 	return nil
@@ -60,7 +61,7 @@ func handleEndpointCreation() (mockendpoint, error) {
 	scanner.Scan()
 	route := scanner.Text()
 	if route[0] != '/' {
-		return mockendpoint{}, errors.New(fmt.Sprintf("Route %s does not start with '/', plesae provide a valid route", route))
+		return mockendpoint{}, fmt.Errorf("route %s does not start with '/', plesae provide a valid route", route)
 	}
 
 	fmt.Print("Enter endpoint request method (e.g. GET) > ")
@@ -73,7 +74,7 @@ func handleEndpointCreation() (mockendpoint, error) {
 		"PUT",
 	}
 	if !slices.Contains(supportedMethods, strings.ToUpper(method)) {
-		return mockendpoint{}, errors.New(fmt.Sprintf("invalid method type, method must be of %v", supportedMethods))
+		return mockendpoint{}, fmt.Errorf("invalid method type, method must be of %v", supportedMethods)
 	}
 
 	fmt.Print("Enter endpoint response delay in milliseconds (e.g. 1000 for 1s) or type 0 for no delay > ")
@@ -89,7 +90,7 @@ func handleEndpointCreation() (mockendpoint, error) {
 
 	fields := make([]field, 0)
 	for {
-		fmt.Print("Add request body fields? [Y/N]")
+		fmt.Print("Add request body fields? [Y/N] > ")
 		scanner.Scan()
 		wantsToAdd := scanner.Text()
 		if strings.ToLower(wantsToAdd) == "n" {
@@ -112,7 +113,7 @@ func handleEndpointCreation() (mockendpoint, error) {
 				"list",
 			}
 			if !slices.Contains(supportedTypes, sanitizedFieldtype) {
-				return mockendpoint{}, errors.New(fmt.Sprintf("Field type %s is not supported, please provide one of the supported field types"))
+				return mockendpoint{}, fmt.Errorf("field type %s is not supported, please provide one of the supported field types", sanitizedFieldtype)
 			}
 
 			fmt.Print("Is this field required? [Y/N] > ")
@@ -145,15 +146,23 @@ func handleEndpointCreation() (mockendpoint, error) {
 		return mockendpoint{}, errors.New("status code must be between 100 and 599")
 	}
 
-	responses := make([]any, 0)
-	if len(fields) > 0 {
-		for i := 0; i < len(fields); i++ {
-			fmt.Printf("Enter response body for field %s > ", fields[i])
-			scanner.Scan()
-			res := scanner.Text()
+	r := make(map[string]any, 0)
+	for {
+		fmt.Println("Add a response body? [Y/N] > ")
+		scanner.Scan()
+		response := scanner.Text()
+		if strings.ToLower(response) == "n" {
+			break
 
-			responses = append(responses, res)
 		}
+		fmt.Println("Enter response body key (e.g. tweet_id) > ")
+		scanner.Scan()
+		k := scanner.Text()
+		fmt.Printf("Enter %v value (e.g. 21095721956219740917401) > ", k)
+		scanner.Scan()
+		v := scanner.Text()
+
+		r[k] = v
 	}
 
 	mockendpoint := mockendpoint{
@@ -165,10 +174,9 @@ func handleEndpointCreation() (mockendpoint, error) {
 		},
 		Response: mockendpointresponse{
 			StatusCode: statusCode,
-			Body:       responses,
+			Body:       r,
 		},
 	}
-	fmt.Println(structureEndpoint(mockendpoint))
 
 	return mockendpoint, nil
 }
@@ -181,10 +189,10 @@ func structureEndpoint(endpoint mockendpoint) string {
 	fields := "Request Fields >\n"
 	for i := 0; i < len(endpoint.Request.Body); i++ {
 		f := endpoint.Request.Body[i]
-		fields += fmt.Sprintf("Field %s Type %s Required %t", f.Name, f.Type, f.Required)
+		fields += fmt.Sprintf("Field %s Type %s Required %v\n", f.Name, f.Type, f.Required)
 	}
 
-	response := fmt.Sprintf("Response >\n%v", endpoint.Response.Body)
+	response := structureResponseBody(endpoint.Response.Body)
 
 	return out + msg + fields + response
 }
