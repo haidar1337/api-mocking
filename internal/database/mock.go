@@ -3,11 +3,17 @@ package db
 import "errors"
 
 type MockEndpoint struct {
-	Endpoint string               `json:"endpoint"`
-	Method   string               `json:"method"`
-	Delay    uint                 `json:"delay"`
-	Request  MockEndpointRequest  `json:"request"`
-	Response MockEndpointResponse `json:"response"`
+	Endpoint        string                      `json:"endpoint"`
+	Method          string                      `json:"method"`
+	Delay           uint                        `json:"delay"`
+	Request         MockEndpointRequest         `json:"request"`
+	Response        MockEndpointResponse        `json:"response"`
+	ErrorSimulation MockEndpointErrorSimulation `json:"error_simulation"`
+}
+
+type MockEndpointErrorSimulation struct {
+	ErrorStatusCode int    `json:"error_status_code"`
+	Body            string `json:"error_body"`
 }
 
 type MockEndpointRequest struct {

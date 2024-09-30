@@ -173,6 +173,30 @@ func handleEndpointCreation() (mockendpoint, error) {
 		r[k] = v
 	}
 
+	fmt.Printf("Add error simulation? [Y/N] > ")
+	scanner.Scan()
+	response := scanner.Text()
+	var errorSimulation MockEndpointErrorSimulation
+	if strings.ToLower(response) == "y" {
+		fmt.Print("Enter error status code (e.g. 500) > ")
+		scanner.Scan()
+		userEnteredCode := scanner.Text()
+		errorStatusCode, err := strconv.Atoi(userEnteredCode)
+		if err != nil {
+			return mockendpoint{}, err
+		}
+		if errorStatusCode < 400 || errorStatusCode > 599 {
+			return mockendpoint{}, fmt.Errorf("invalid error status code %d, error status code must be between the range of 400 to 599", errorStatusCode)
+		}
+
+		fmt.Printf("Enter error response body (e.g. user not found) > ")
+		scanner.Scan()
+		errBody := scanner.Text()
+
+		errorSimulation.Body = errBody
+		errorSimulation.ErrorStatusCode = errorStatusCode
+	}
+
 	mockendpoint := mockendpoint{
 		Endpoint: route,
 		Method:   method,
@@ -184,6 +208,7 @@ func handleEndpointCreation() (mockendpoint, error) {
 			StatusCode: statusCode,
 			Body:       r,
 		},
+		ErrorSimulation: errorSimulation,
 	}
 
 	return mockendpoint, nil

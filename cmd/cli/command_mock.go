@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 func commandMock(cfg *config, args ...string) error {
@@ -17,17 +20,27 @@ func commandMock(cfg *config, args ...string) error {
 	if id == 0 {
 		return nil
 	}
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Which response would you like to simulate?\n1. Normal Response\n2. Error Response")
+	scanner.Scan()
+	simulate := scanner.Text()
 
 	fmt.Printf("Sending a %s request to %s...\n", endpoints[id-1].Method, endpoints[id-1].Endpoint)
-
 	mockendpoint, err := mockEndpoint(id, cfg)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Status: %v, Time: %vs\n", mockendpoint.Response.StatusCode, mockendpoint.Delay/1000)
-	response := structureResponseBody(mockendpoint.Response.Body)
-	fmt.Println(response)
+	if simulate == "1" {
+		fmt.Printf("Status: %v, Time: %vs\n", mockendpoint.Response.StatusCode, mockendpoint.Delay/1000)
+		response := structureResponseBody(mockendpoint.Response.Body)
+		fmt.Println(response)
+	} else if simulate == "2" {
+		fmt.Printf("Status: %v, Time: %vs\n", mockendpoint.ErrorSimulation.ErrorStatusCode, mockendpoint.Delay/1000)
+		fmt.Printf("{\n  \"error\": %v \n}\n", mockendpoint.ErrorSimulation.Body)
+	} else {
+		return errors.New("invalid selection")
+	}
 
 	return nil
 }
