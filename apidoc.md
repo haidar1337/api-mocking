@@ -12,12 +12,12 @@ This file is to provide documentation about the mock API, aka the server running
     "request_body": [
       {
         "name": "email",
-        "type": string,
+        "type": "string",
         "required": true
       },
       {
         "name": "password",
-        "type": string,
+        "type": "string",
         "required": true
       },
     ]
@@ -25,8 +25,8 @@ This file is to provide documentation about the mock API, aka the server running
   "response": {
     "status_code": 201,
     "response_body": {
-      "id": jfsaof29v5n91vm3jr3q90rjq09gh94,
-      "email": test@example.com
+      "id": "jfsaof29v5n91vm3jr3q90rjq09gh94",
+      "email": "test@example.com"
     }
   },
   "error_simulation": {
