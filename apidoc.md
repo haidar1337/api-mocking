@@ -75,6 +75,37 @@ Request Body:
 
 Response Body: 201 with the same request body.
 
+### GET /mock/endpoints/{endpointId}
+
+Response Body:
+```json
+{
+  "endpoint": "/api/users/{userId}",
+  "method": "GET",
+  "delay": 2000,
+  "request": {
+    "request_body": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "response": {
+    "status_code": 200,
+    "response_body": {
+      "id": "jfsaof29v5n91vm3jr3q90rjq09gh94",
+      "username": "haidar1337"
+    }
+  },
+  "error_simulation": {
+    "error_status_code": 404,
+    "error_body": "user not found"
+  }
+}
+```
+
 ### DELETE /mock/endpoints/{endpointId}
 Delets a mock endpoint.
 
