@@ -76,6 +76,7 @@ Request Body:
 Response Body: 201 with the same request body.
 
 ### GET /mock/endpoints/{endpointId}
+Get a mock endpoint by its id.
 
 Response Body:
 ```json
